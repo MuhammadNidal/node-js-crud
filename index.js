@@ -50,6 +50,25 @@ const server = http.createServer((req, res) => {
             }
         });
     }
+    
+    // Handle DELETE /data (delete existing data by id)
+    else if (url === '/delete' && method === 'DELETE') {
+        getRequestBody(req, (body) => {
+            const parsedData = JSON.parse(body);  // Parse the data to find the ID
+            const index = dataStore.findIndex(item => item.id === parsedData.id); // Find the item by ID
+
+            if (index !== -1) {
+                dataStore.splice(index, 1);       // Remove the data from the array
+                res.writeHead(200);
+                res.end(JSON.stringify({ message: 'Data deleted successfully' }));
+            } else {
+                res.writeHead(404);               // Send 404 if the item was not found
+                res.end(JSON.stringify({ message: 'Data not found' }));
+            }
+        });
+    }
+    // Handle other routes
+
        else {
         res.writeHead(404);
         res.end(JSON.stringify({ message: 'Route not found' }));
