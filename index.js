@@ -1,6 +1,5 @@
 const http = require('http');
 
-// In-memory data store (array of objects)
 let dataStore = [];
 
 // Helper function to get the body data from the request
@@ -28,46 +27,13 @@ const server = http.createServer((req, res) => {
     // Handle POST /data (add new data)
     else if (url === '/post' && method === 'POST') {
         getRequestBody(req, (body) => {
-            const parsedData = JSON.parse(body);  // Parse JSON data from request body
-            dataStore.push(parsedData);           // Add to the in-memory data store
-            res.writeHead(201);                   // Status code 201 for resource creation
+            const parsedData = JSON.parse(body);  
+            dataStore.push(parsedData);           
+            res.writeHead(201);            
             res.end(JSON.stringify({ message: 'Data added successfully', data: parsedData }));
         });
     }
-    // Handle PUT /data (update existing data by id)
-    else if (url === '/put' && method === 'PUT') {
-        getRequestBody(req, (body) => {
-            const parsedData = JSON.parse(body);  // Parse the data to update
-            const index = dataStore.findIndex(item => item.id === parsedData.id); // Find the item by ID
-
-            if (index !== -1) {
-                dataStore[index] = parsedData;    // Update the data
-                res.writeHead(200);
-                res.end(JSON.stringify({ message: 'Data updated successfully', data: parsedData }));
-            } else {
-                res.writeHead(404);               // Send 404 if the item was not found
-                res.end(JSON.stringify({ message: 'Data not found' }));
-            }
-        });
-    }
-    // Handle DELETE /data (delete existing data by id)
-    else if (url === '/delete' && method === 'DELETE') {
-        getRequestBody(req, (body) => {
-            const parsedData = JSON.parse(body);  // Parse the data to find the ID
-            const index = dataStore.findIndex(item => item.id === parsedData.id); // Find the item by ID
-
-            if (index !== -1) {
-                dataStore.splice(index, 1);       // Remove the data from the array
-                res.writeHead(200);
-                res.end(JSON.stringify({ message: 'Data deleted successfully' }));
-            } else {
-                res.writeHead(404);               // Send 404 if the item was not found
-                res.end(JSON.stringify({ message: 'Data not found' }));
-            }
-        });
-    }
-    // Handle other routes
-    else {
+       else {
         res.writeHead(404);
         res.end(JSON.stringify({ message: 'Route not found' }));
     }
